@@ -1,0 +1,17 @@
+{
+    "name": "gpgkd906/form2",
+    "description": "just another form helper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "chen han",
+            "email": "gpgkd906@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+	"psr-0": {
+	    "Form2": "src/"
+	}
+    }
+}
