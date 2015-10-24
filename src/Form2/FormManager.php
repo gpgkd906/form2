@@ -110,7 +110,7 @@ class FormManager {
 			trigger_error("FormHelper:requested form_id was used,old form should be overwrite", E_USER_NOTICE);
 		}
 		$this->last_id=$id;
-		$this->storage[$id] = new FormObj($id);
+		$this->storage[$id] = new Form($id);
 		return $this->storage[$id];
 	}
 
