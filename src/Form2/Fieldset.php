@@ -15,7 +15,7 @@ class Fieldset {
      * @access private
      * @link
      */
-    private $elements = [];
+    protected $elements = [];
 
     /**
      *
@@ -24,7 +24,7 @@ class Fieldset {
      * @access private
      * @link
      */
-    private $name = null;
+    protected $name = null;
 
     /**
      *
@@ -33,7 +33,7 @@ class Fieldset {
      * @access private
      * @link
      */
-    private $data = null;
+    protected $data = null;
 
     /**
      *
@@ -51,7 +51,7 @@ class Fieldset {
      * @access private
      * @link
      */
-    private $fieldset = null;
+    protected $fieldset = null;
 
     public function __construct($form, $fieldset = [])
     {
@@ -148,10 +148,13 @@ class Fieldset {
      * @return
      * @link
      */
-    public function addElement (FormElementInterface $element)
+    public function addElement (FormElementInterface $element, $name = null)
     {
         $element->setScope($this->getName());
-        $this->elements[] = $element;
+        if($name === null) {
+            $name = $element->name;
+        }
+        $this->elements[$name] = $element;
     }
 
     /**
@@ -226,10 +229,12 @@ class Fieldset {
                     $element->set($key, $val);
                 }
             }
-            $this->addElement($element);
+            $this->addElement($element, $name);
         }
         $this->onInit();
     }
     
-    public function onInit() {}   
+    public function onInit() {}
+    
+    public function onSubmit() {}
 }

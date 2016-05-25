@@ -210,7 +210,7 @@ class FormElement implements FormElementInterface {
      */
 	protected function getValue() {
         if($this->value === null) {
-            $this->value = $this->getForm()->getData($this->name, $this->getScope());
+            $this->value = $this->getForm()->getData($this->name, $this->getScope(), true);
         }
         return $this->value;
 	}
@@ -285,7 +285,7 @@ class FormElement implements FormElementInterface {
 		if($this->type === "file") {
 			if(is_array($value) && isset($value["size"])) {
 				$value = $value["size"];
-			} 
+			}
 		}
 		if(isset($this->attrs["maxlength"])) {
 			if($this->attrs["maxlength"] < mb_strlen($value, "UTF-8")) {

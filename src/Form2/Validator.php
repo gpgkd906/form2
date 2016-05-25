@@ -97,7 +97,7 @@ class Validator {
 	}
 
 	public static function notNull($val){
-		if(empty($val)){
+		if(empty($val) && $val !== '0' && $val !== 0){
 			return false;
 		}
 		return true;
@@ -256,7 +256,7 @@ class Validator {
 			case self::TagCheck:
 			default:
 				if(is_callable($set["rule"])){
-					$res = call_user_func_array($set["rule"], $val);
+					$res = call_user_func($set["rule"], $val);
 				}elseif(!self::regFilter($val)){
 					$res["status"] = "error";
 					$res["message"] = $res["message"] ? $res["message"] : "※不正な文章";	

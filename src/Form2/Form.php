@@ -103,6 +103,42 @@ class Form {
     public $csrfExpire = 1800;
     
     /**
+     *
+     * @api
+     * @var mixed $message 
+     * @access private
+     * @link
+     */
+    private $message = [];
+
+    /**
+     * 
+     * @api
+     * @param mixed $message
+     * @return mixed $message
+     * @link
+     */
+    public function setMessage ($message)
+    {
+        return $this->message = $message;
+    }
+
+    /**
+     * 
+     * @api
+     * @return mixed $message
+     * @link
+     */
+    public function getMessage ()
+    {
+        return $this->message;
+    }
+
+    public function addMessage ($name, $message)
+    {
+        return $this->message[$name] = $message;
+    }
+    /**
      * 構造器、フォームオブジェクトを生成
      * @param string 
      * @return
@@ -193,10 +229,14 @@ class Form {
         if($elementClass === null) {
             $elementClass = __NAMESPACE__ . '\Element\\' . ucfirst($type);
             if(!class_exists($elementClass)) {
-                $elementClass = __NAMESPACE__ . '\Element\\FormElement';
+                if(class_exists($type)) {
+                    $elementClass = $type;
+                } else {
+                    $elementClass = __NAMESPACE__ . '\Element\\FormElement';
+                }
             }
         }
-        if(!class_exists($elementClass)) {
+        If(!class_exists($elementClass)) {
             throw new Exception(sprintf('不明なFormElement: %s', $elementClass));
         }
 		return new $elementClass($name, $type, $val, $default);
@@ -222,7 +262,7 @@ class Form {
      * @param string $name データキー
      * @return
      */
-	public function getData($name = null, $scope = null) {
+	public function getData($name = null, $scope = null, $defaultNull = false) {
 		if($this->request_data == null) {
 			$data = $this->allData();
 			foreach($this->except as $key => $except) {
@@ -237,7 +277,9 @@ class Form {
         if($name !== null && isset($data[$name])) {
             $data = $data[$name];            
         } else {
-            $data = null;
+            if($defaultNull) {
+                $data = null;
+            }
         }
         return $data;
 	}
@@ -331,6 +373,7 @@ class Form {
 				$element->value($_data[$name]);
 			}
 			if($element->validata() === false) {
+                $this->addMessage($name, $element->error);
 				$this->no_error = false;
 			}
 		}
@@ -399,6 +442,9 @@ class Form {
 				return false;
 			}
 			$data = $this->getData();
+            foreach($this->getFieldsets() as $fieldset) {
+                $fieldset->onSubmit();
+            }
 			if(is_callable($callback)) {
 				return call_user_func($callback, $data, $this);
 			}
@@ -541,6 +587,7 @@ class Form {
         }
         $fieldset->initialization();
         $this->fieldsets[$fieldset->getName()] = $fieldset;
+        return $fieldset;
     }
 
     /**
